@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {useSetRecoilState} from 'recoil';
+import {showAdminConsoleModalState} from '../atoms/AdminConsoleModalState';
 
 import {showModalState} from '../atoms/ChangeUserModalState';
 import {showSettingsMenuState} from '../atoms/SettingsMenuState';
@@ -58,7 +59,9 @@ const SettingsMenuItemConfigs = [
   {
     type: SettingsMenuItemType.ADMIN_CONSOLE,
     label: 'Admin Console',
-    onClick: () => {},
+    onClick: (setShowAdminConsoleModal: (value: boolean) => void) => {
+      setShowAdminConsoleModal(true);
+    },
   },
   {
     type: SettingsMenuItemType.CHANGE_USER,
@@ -70,6 +73,9 @@ const SettingsMenuItemConfigs = [
 
 const SettingsMenu = () => {
   const setShowChangeUserModal = useSetRecoilState(showModalState);
+  const setShowAdminConsoleModal = useSetRecoilState(
+    showAdminConsoleModalState
+  );
   const setShowSettingsMenu = useSetRecoilState(showSettingsMenuState);
   const [hoveredMenuItemKey, setHoveredMenuItemKey] = useState<number | null>(
     null
@@ -88,7 +94,14 @@ const SettingsMenu = () => {
             }}
             onClick={() => {
               setShowSettingsMenu(false);
-              menuItem.onClick(setShowChangeUserModal);
+              switch (menuItem.type) {
+                case SettingsMenuItemType.CHANGE_USER:
+                  menuItem.onClick(setShowChangeUserModal);
+                  break;
+                case SettingsMenuItemType.ADMIN_CONSOLE:
+                  menuItem.onClick(setShowAdminConsoleModal);
+                  break;
+              }
             }}
             onMouseEnter={() => setHoveredMenuItemKey(idx)}
             onMouseLeave={() => setHoveredMenuItemKey(null)}
