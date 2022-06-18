@@ -41,6 +41,7 @@ const SettingsMenuItemType = Object.freeze({
   SETTINGS: 'SETTINGS',
   HELP: 'HELP',
   CHANGE_USER: 'CHANGE_USER',
+  ADMIN_CONSOLE: 'ADMIN_CONSOLE',
 });
 
 const SettingsMenuItemConfigs = [
@@ -52,6 +53,11 @@ const SettingsMenuItemConfigs = [
   {
     type: SettingsMenuItemType.HELP,
     label: 'Help',
+    onClick: () => {},
+  },
+  {
+    type: SettingsMenuItemType.ADMIN_CONSOLE,
+    label: 'Admin Console',
     onClick: () => {},
   },
   {
