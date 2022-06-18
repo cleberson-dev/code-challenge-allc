@@ -1,0 +1,43 @@
+version: "2"
+services:
+    client:
+        build: ./client/
+        image: site-wide-warning-client
+        restart: always
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./client:/client
+            - /client/node_modules
+        entrypoint: ["npm", "start"]
+        links:
+            - server
+        networks:
+            [webappnetwork]
+    server:
+        build: ./server/
+        image: site-wide-warning-server
+        restart: always
+        ports:
+            - "8000:8000"
+        volumes:
+            - ./server:/server
+            - /server/node_modules
+        depends_on:
+            - mongodb
+        networks:
+            [webappnetwork]
+    mongodb:
+        image: mongo
+        restart: always
+        container_name: site-wide-warning-mongodb
+        volumes:
+            - ./data-node:/data/db
+        ports:
+            - 27017:27017
+        command: mongod --noauth
+        networks:
+            - webappnetwork
+networks:
+  webappnetwork:
+      driver: bridge
