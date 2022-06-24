@@ -1,5 +1,8 @@
+import {useState} from 'react';
+import {GoChevronDown, GoChevronUp} from 'react-icons/go';
 import {useSetRecoilState} from 'recoil';
 import {showAdminConsoleModalState} from '../atoms/AdminConsoleModalState';
+import {AdminConsoleDropdown} from './AdminConsoleDropdown';
 
 const styles: {[key: string]: React.CSSProperties} = {
   root: {
@@ -28,12 +31,62 @@ const styles: {[key: string]: React.CSSProperties} = {
     boxShadow:
       '0px 6px 20px 0px rgba(176, 190, 197, 0.32), 0px 2px 4px 0px rgba(176, 190, 197, 0.32)',
   },
+  dropdownButton: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderColor: '#C6C6C6',
+    borderRadius: '5px',
+    borderStyle: 'solid',
+    borderWidth: '1px',
+    paddingLeft: '10px',
+    paddingRight: '10px',
+    width: '450px',
+    height: '60px',
+  },
+  optionTitle: {
+    fontSize: '14px',
+    fontWeight: '600',
+  },
 };
+
+type WarningType = {
+  type: string;
+  title: string;
+  description: string;
+};
+
+const options: WarningType[] = [
+  {
+    type: 'download',
+    title: 'Download Server Unavailable Warning',
+    description:
+      'We are currently experiencing issues with our download server, we’re working on fixing it as soon as possible',
+  },
+  {
+    type: 'upload',
+    title: 'Upload Server Unavailable Warning',
+    description:
+      'We are currently experiencing issues with our upload server, we’re working on fixing it as soon as possible',
+  },
+  {
+    type: 'data-inconsistency',
+    title: 'Data Inconsistency Warning',
+    description:
+      'We are currently experiencing some issues with data consistency, we’re working on fixing it as soon as possible',
+  },
+];
 
 const AdminConsoleModal = (): JSX.Element => {
   const setShowAdminConsoleModal = useSetRecoilState(
     showAdminConsoleModalState
   );
+
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [currentOption, setCurrentOption] = useState<WarningType | null>(null);
+  const [iconColor, setIconColor] = useState('#414141');
+  const ChevronIcon = showDropdown ? GoChevronUp : GoChevronDown;
 
   const onExitModal = () => {
     setShowAdminConsoleModal(false);
@@ -46,7 +99,37 @@ const AdminConsoleModal = (): JSX.Element => {
       onClick={onExitModal}
     >
       <div style={styles.modal}>
-        <h1>AdminConsoleModal</h1>
+        <h1>Admin Console</h1>
+
+        <h4>Start a Side Wide Warning</h4>
+        <div
+          style={styles.dropdownButton}
+          onClick={e => {
+            e.stopPropagation();
+            setShowDropdown(!showDropdown);
+          }}
+        >
+          <div style={styles.optionTitle}>{currentOption?.title}</div>
+          <ChevronIcon
+            size={30}
+            color={iconColor}
+            onMouseEnter={() => setIconColor('#525252')}
+            onMouseLeave={() => setIconColor('#414141')}
+            onClick={event => {
+              event.stopPropagation();
+              setShowDropdown(!showDropdown);
+            }}
+          />
+        </div>
+        {showDropdown && (
+          <AdminConsoleDropdown
+            warnings={options}
+            onSelect={warning => {
+              setShowDropdown(!showDropdown);
+              setCurrentOption(warning);
+            }}
+          />
+        )}
       </div>
     </div>
   );
