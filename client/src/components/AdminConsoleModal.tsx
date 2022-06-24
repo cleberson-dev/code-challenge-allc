@@ -4,6 +4,7 @@ import {useSetRecoilState} from 'recoil';
 import {showAdminConsoleModalState} from '../atoms/AdminConsoleModalState';
 import Logger from '../utils/Logger';
 import {AdminConsoleDropdown} from './AdminConsoleDropdown';
+import Button from './Button';
 
 const styles: {[key: string]: React.CSSProperties} = {
   root: {
@@ -166,26 +167,13 @@ const AdminConsoleModal = (): JSX.Element => {
           />
         )}
         <div style={styles.footer}>
-          <div
-            style={{...styles.cancelButton, opacity: cancelButtonOpacity}}
-            onClick={onExitModal}
-            onMouseEnter={() => setCancelButtonOpacity(0.8)}
-            onMouseLeave={() => setCancelButtonOpacity(1.0)}
-          >
+          <Button style={styles.cancelButton} onClick={onExitModal}>
             Cancel
-          </div>
+          </Button>
 
-          <div
-            style={{
-              ...styles.startWarningButton,
-              opacity: currentOption === null ? 0.5 : startWarningButtonOpacity,
-            }}
-            onMouseEnter={() =>
-              currentOption !== null && setStartWarningButtonOpacity(0.8)
-            }
-            onMouseLeave={() =>
-              currentOption !== null && setStartWarningButtonOpacity(1.0)
-            }
+          <Button
+            style={styles.startWarningButton}
+            disabled={currentOption === null}
             onClick={event => {
               event.stopPropagation();
               if (currentOption !== null) {
@@ -201,8 +189,8 @@ const AdminConsoleModal = (): JSX.Element => {
               }
             }}
           >
-            Change User
-          </div>
+            Start Warning
+          </Button>
         </div>
       </div>
     </div>
