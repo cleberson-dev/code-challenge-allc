@@ -26,7 +26,7 @@ const styles: {[key: string]: React.CSSProperties} = {
   },
 };
 
-const Button = (props: ButtonProps): JSX.Element => {
+const Button = ({disabled, ...props}: ButtonProps): JSX.Element => {
   const [hovered, setHovered] = useState(false);
 
   return (
@@ -35,7 +35,7 @@ const Button = (props: ButtonProps): JSX.Element => {
       style={{
         ...styles.container,
         ...props.style,
-        opacity: hovered && !props.disabled ? 0.8 : 1,
+        opacity: disabled ? 0.5 : hovered ? 0.8 : 1,
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
