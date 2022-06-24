@@ -1,3 +1,4 @@
+import {Warning} from './../models/Warning';
 import {atom} from 'recoil';
 import {User} from '../models/User';
 
@@ -11,4 +12,9 @@ const nextUserState = atom<User | null>({
   default: null,
 });
 
-export {currentUserState, nextUserState};
+const warningState = atom<Warning | null>({
+  key: 'warning',
+  default: null,
+});
+
+export {currentUserState, nextUserState, warningState};
