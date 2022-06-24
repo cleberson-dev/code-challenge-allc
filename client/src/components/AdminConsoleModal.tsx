@@ -2,6 +2,7 @@ import {useState} from 'react';
 import {GoChevronDown, GoChevronUp} from 'react-icons/go';
 import {useSetRecoilState} from 'recoil';
 import {showAdminConsoleModalState} from '../atoms/AdminConsoleModalState';
+import Logger from '../utils/Logger';
 import {AdminConsoleDropdown} from './AdminConsoleDropdown';
 
 const styles: {[key: string]: React.CSSProperties} = {
@@ -19,10 +20,10 @@ const styles: {[key: string]: React.CSSProperties} = {
   },
   modal: {
     width: '500px',
-    height: '300px',
+    minHeight: '300px',
     borderRadius: '10px',
     backgroundColor: 'rgba(255, 255, 255, 1)',
-    paddingLeft: '20px',
+    padding: '0 20px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
@@ -42,12 +43,43 @@ const styles: {[key: string]: React.CSSProperties} = {
     borderWidth: '1px',
     paddingLeft: '10px',
     paddingRight: '10px',
-    width: '450px',
+    width: '100%',
+    boxSizing: 'border-box',
     height: '60px',
   },
   optionTitle: {
     fontSize: '14px',
     fontWeight: '600',
+  },
+  footer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    width: '100%',
+    padding: '20px 0',
+    fontWeight: 600,
+  },
+  cancelButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#EDEDED',
+    width: '140px',
+    height: '50px',
+    borderRadius: '5px',
+    marginRight: '15px',
+    cursor: 'default',
+  },
+  startWarningButton: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F47564',
+    color: 'white',
+    width: '140px',
+    height: '50px',
+    borderRadius: '5px',
+    cursor: 'default',
   },
 };
 
@@ -87,6 +119,9 @@ const AdminConsoleModal = (): JSX.Element => {
   const [currentOption, setCurrentOption] = useState<WarningType | null>(null);
   const [iconColor, setIconColor] = useState('#414141');
   const ChevronIcon = showDropdown ? GoChevronUp : GoChevronDown;
+  const [cancelButtonOpacity, setCancelButtonOpacity] = useState(1.0);
+  const [startWarningButtonOpacity, setStartWarningButtonOpacity] =
+    useState(1.0);
 
   const onExitModal = () => {
     setShowAdminConsoleModal(false);
@@ -130,6 +165,45 @@ const AdminConsoleModal = (): JSX.Element => {
             }}
           />
         )}
+        <div style={styles.footer}>
+          <div
+            style={{...styles.cancelButton, opacity: cancelButtonOpacity}}
+            onClick={onExitModal}
+            onMouseEnter={() => setCancelButtonOpacity(0.8)}
+            onMouseLeave={() => setCancelButtonOpacity(1.0)}
+          >
+            Cancel
+          </div>
+
+          <div
+            style={{
+              ...styles.startWarningButton,
+              opacity: currentOption === null ? 0.5 : startWarningButtonOpacity,
+            }}
+            onMouseEnter={() =>
+              currentOption !== null && setStartWarningButtonOpacity(0.8)
+            }
+            onMouseLeave={() =>
+              currentOption !== null && setStartWarningButtonOpacity(1.0)
+            }
+            onClick={event => {
+              event.stopPropagation();
+              if (currentOption !== null) {
+                setShowDropdown(false);
+                // setCurrentOption(currentOption);
+                Logger.info(
+                  'Switched warning to ' +
+                    currentOption?.title +
+                    ' ' +
+                    currentOption?.description
+                );
+                onExitModal();
+              }
+            }}
+          >
+            Change User
+          </div>
+        </div>
       </div>
     </div>
   );
