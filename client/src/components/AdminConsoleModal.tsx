@@ -122,7 +122,7 @@ const AdminConsoleModal = (): JSX.Element => {
   const [warning, setWarning] = useRecoilState(warningState);
 
   const [showDropdown, setShowDropdown] = useState(false);
-  const [currentOption, setCurrentOption] = useState<Warning | null>(null);
+  const [currentOption, setCurrentOption] = useState<Warning | null>(warning);
   const [iconColor, setIconColor] = useState('#414141');
   const ChevronIcon = showDropdown ? GoChevronUp : GoChevronDown;
 
