@@ -1,6 +1,6 @@
-import {useState} from 'react';
+import {useMemo, useState} from 'react';
 import {GoChevronDown, GoChevronUp} from 'react-icons/go';
-import {useSetRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 import {showAdminConsoleModalState} from '../atoms/AdminConsoleModalState';
 import {warningState} from '../atoms/UserState';
 import {Warning, WarningTypes} from '../models/Warning';
@@ -84,6 +84,9 @@ const styles: {[key: string]: React.CSSProperties} = {
     borderRadius: '5px',
     cursor: 'default',
   },
+  endWarningButton: {
+    backgroundColor: '#ABEFEB',
+  },
 };
 
 const options: Warning[] = [
@@ -114,7 +117,7 @@ const AdminConsoleModal = (): JSX.Element => {
   const setShowAdminConsoleModal = useSetRecoilState(
     showAdminConsoleModalState
   );
-  const setWarning = useSetRecoilState(warningState);
+  const [warning, setWarning] = useRecoilState(warningState);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [currentOption, setCurrentOption] = useState<Warning | null>(null);
@@ -169,8 +172,15 @@ const AdminConsoleModal = (): JSX.Element => {
           </Button>
 
           <Button
+            style={styles.endWarningButton}
+            disabled={warning?.id !== currentOption?.id}
+          >
+            End Warning
+          </Button>
+
+          <Button
             style={styles.startWarningButton}
-            disabled={currentOption === null}
+            disabled={warning?.id === currentOption?.id}
             onClick={event => {
               event.stopPropagation();
               if (currentOption !== null) {
