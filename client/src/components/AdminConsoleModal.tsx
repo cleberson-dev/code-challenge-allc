@@ -8,6 +8,8 @@ import Logger from '../utils/Logger';
 import {AdminConsoleDropdown} from './AdminConsoleDropdown';
 import Button from './Button';
 
+type ButtonClickHandler = React.MouseEventHandler<HTMLButtonElement>;
+
 const styles: {[key: string]: React.CSSProperties} = {
   root: {
     display: 'flex',
@@ -128,6 +130,36 @@ const AdminConsoleModal = (): JSX.Element => {
     setShowAdminConsoleModal(false);
   };
 
+  const onStartWarning: ButtonClickHandler = event => {
+    event.stopPropagation();
+    if (currentOption !== null) {
+      setShowDropdown(false);
+      setWarning(currentOption);
+      Logger.info(
+        'Starting warning: ' +
+          currentOption?.title +
+          ' ' +
+          currentOption?.description
+      );
+      onExitModal();
+    }
+  };
+
+  const onEndWarning: ButtonClickHandler = event => {
+    event.stopPropagation();
+    if (currentOption !== null) {
+      setShowDropdown(false);
+      setWarning(null);
+      Logger.info(
+        'Ending warning: ' +
+          currentOption?.title +
+          ' ' +
+          currentOption?.description
+      );
+      onExitModal();
+    }
+  };
+
   return (
     <div
       style={styles.root}
@@ -174,6 +206,7 @@ const AdminConsoleModal = (): JSX.Element => {
           <Button
             style={styles.endWarningButton}
             disabled={warning?.id !== currentOption?.id}
+            onClick={onEndWarning}
           >
             End Warning
           </Button>
@@ -181,20 +214,7 @@ const AdminConsoleModal = (): JSX.Element => {
           <Button
             style={styles.startWarningButton}
             disabled={warning?.id === currentOption?.id}
-            onClick={event => {
-              event.stopPropagation();
-              if (currentOption !== null) {
-                setShowDropdown(false);
-                setWarning(currentOption);
-                Logger.info(
-                  'Switched warning to ' +
-                    currentOption?.title +
-                    ' ' +
-                    currentOption?.description
-                );
-                onExitModal();
-              }
-            }}
+            onClick={onStartWarning}
           >
             Start Warning
           </Button>
