@@ -2,6 +2,8 @@ import {useState} from 'react';
 import {GoChevronDown, GoChevronUp} from 'react-icons/go';
 import {useSetRecoilState} from 'recoil';
 import {showAdminConsoleModalState} from '../atoms/AdminConsoleModalState';
+import {warningState} from '../atoms/UserState';
+import {Warning, WarningTypes} from '../models/Warning';
 import Logger from '../utils/Logger';
 import {AdminConsoleDropdown} from './AdminConsoleDropdown';
 import Button from './Button';
@@ -84,27 +86,24 @@ const styles: {[key: string]: React.CSSProperties} = {
   },
 };
 
-type WarningType = {
-  type: string;
-  title: string;
-  description: string;
-};
-
-const options: WarningType[] = [
+const options: Warning[] = [
   {
-    type: 'download',
+    id: 1,
+    type: WarningTypes.DOWNLOAD_SERVER,
     title: 'Download Server Unavailable Warning',
     description:
       'We are currently experiencing issues with our download server, we’re working on fixing it as soon as possible',
   },
   {
-    type: 'upload',
+    id: 2,
+    type: WarningTypes.UPLOAD_SERVER,
     title: 'Upload Server Unavailable Warning',
     description:
       'We are currently experiencing issues with our upload server, we’re working on fixing it as soon as possible',
   },
   {
-    type: 'data-inconsistency',
+    id: 3,
+    type: WarningTypes.DATA_INCONSISTENCY,
     title: 'Data Inconsistency Warning',
     description:
       'We are currently experiencing some issues with data consistency, we’re working on fixing it as soon as possible',
@@ -115,14 +114,12 @@ const AdminConsoleModal = (): JSX.Element => {
   const setShowAdminConsoleModal = useSetRecoilState(
     showAdminConsoleModalState
   );
+  const setWarning = useSetRecoilState(warningState);
 
   const [showDropdown, setShowDropdown] = useState(false);
-  const [currentOption, setCurrentOption] = useState<WarningType | null>(null);
+  const [currentOption, setCurrentOption] = useState<Warning | null>(null);
   const [iconColor, setIconColor] = useState('#414141');
   const ChevronIcon = showDropdown ? GoChevronUp : GoChevronDown;
-  const [cancelButtonOpacity, setCancelButtonOpacity] = useState(1.0);
-  const [startWarningButtonOpacity, setStartWarningButtonOpacity] =
-    useState(1.0);
 
   const onExitModal = () => {
     setShowAdminConsoleModal(false);
@@ -178,7 +175,7 @@ const AdminConsoleModal = (): JSX.Element => {
               event.stopPropagation();
               if (currentOption !== null) {
                 setShowDropdown(false);
-                // setCurrentOption(currentOption);
+                setWarning(currentOption);
                 Logger.info(
                   'Switched warning to ' +
                     currentOption?.title +
