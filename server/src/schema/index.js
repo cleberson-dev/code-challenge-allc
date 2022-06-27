@@ -5,20 +5,15 @@ const schemaComposer = new SchemaComposer();
 import {UserQuery, UserMutation} from './user';
 import {WarningQuery, WarningMutation} from './warning';
 
-schemaComposer.Query.addFields({
-  ...UserQuery,
-});
+const queries = [UserQuery, WarningQuery];
+const mutations = [UserMutation, WarningMutation];
 
-schemaComposer.Mutation.addFields({
-  ...UserMutation,
-});
+queries.forEach((query) => schemaComposer.Query.addFields({
+  ...query,
+}));
 
-schemaComposer.Query.addFields({
-  ...WarningQuery,
-});
-
-schemaComposer.Mutation.addFields({
-  ...WarningMutation,
-});
+mutations.forEach((mutation) => schemaComposer.Mutation.addFields({
+  ...mutation,
+}));
 
 export default schemaComposer.buildSchema();
